@@ -7,12 +7,20 @@ import TimeSeriesGraphView from './TimeSeriesGraphView';
 import FloorplanView from './FloorplanView';
 
 class App extends React.Component {	
+	constructor(props) {
+		super(props);
+		// hardcoded value of average temperature for now
+
+	}
+
 	render() { 		
 		return ( 
 			<div>
 				<h1>sendh3lp's Room Temperature Monitoring Dashboard</h1>
 				<TimeSeriesGraphView />
-				<FloorplanView />
+				<FloorplanView 
+			
+				/>
 			</div>
 		);
 	}
