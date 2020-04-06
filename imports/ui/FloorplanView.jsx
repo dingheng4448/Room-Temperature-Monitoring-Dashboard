@@ -7,15 +7,27 @@ class FloorplanView extends React.Component {
 	constructor(props) {
 		super(props);
 
-		
-		
-		// E1F5FE, #B3E5FC, 81D4FA #4FC3F7, #03A9F4, 0288D1, 01579B
+		this.state = {isR0Selected : true,
+		isR1Selected: true,
+		isR2Selected: true};
 		
 	}
 
+	// probably find a nicer way to do this handle clicks
+	handleR0Click = (event) => {
+		this.setState({isR0Selected: this.state.isR0Selected ? false : true});
+	}
 
+	handleR1Click = (event) => {
+		this.setState({isR1Selected: this.state.isR1Selected ? false : true});
+	}
+
+	handleR2Click = (event) => {
+		this.setState({isR2Selected: this.state.isR2Selected ? false : true});
+	}
 
 	render() { 	
+		// to be refactored out and passed from the main class
 		var tempValues = new Map();
 		tempValues.set('r0', 80);
 		tempValues.set('r1', 93);
@@ -43,15 +55,22 @@ class FloorplanView extends React.Component {
 		return ( 
 			
 			<div className="floorplan">
-				<Room className="room" roomNum={0} colour={sortedTemp.get('r0')}/>
-				<Corridor className="corridor" name={""}/>
-				<Corridor className="corridor" name={"floorplan"}/>
-				<Room className="room" roomNum={1} colour={sortedTemp.get('r1')}/>
-				<Room className="room" roomNum={2} colour={sortedTemp.get('r2')}/>
-				<Room className="room" roomNum={3} colour={sortedTemp.get('r3')}/>
-				<Room className="room" roomNum={4} colour={sortedTemp.get('r4')}/>
-				<Room className="room" roomNum={5} colour={sortedTemp.get('r5')}/>
-				<Room className="room" roomNum={6} colour={sortedTemp.get('r6')}/>
+				<Room 
+				roomNum={0} 
+				colour={this.state.isR0Selected ? sortedTemp.get('r0') : "#ffffff"}
+				onClick={this.handleR0Click}/>
+				<Corridor name={""}/>
+				<Corridor name={"floorplan"}/>
+				<Room roomNum={1}
+				colour={this.state.isR1Selected ? sortedTemp.get('r1') : "#ffffff"}
+				onClick={this.handleR1Click}/>
+				<Room roomNum={2} 
+				colour={this.state.isR2Selected ? sortedTemp.get('r2') : "#ffffff"}
+				onClick={this.handleR2Click}/>
+				<Room roomNum={3} colour={sortedTemp.get('r3')}/>
+				<Room roomNum={4} colour={sortedTemp.get('r4')}/>
+				<Room roomNum={5} colour={sortedTemp.get('r5')}/>
+				<Room roomNum={6} colour={sortedTemp.get('r6')}/>
 
 				
 			</div>

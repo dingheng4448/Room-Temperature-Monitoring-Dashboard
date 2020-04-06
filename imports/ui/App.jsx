@@ -9,7 +9,6 @@ import FloorplanView from './FloorplanView';
 class App extends React.Component {	
 	constructor(props) {
 		super(props);
-		// hardcoded value of average temperature for now
 
 	}
 
