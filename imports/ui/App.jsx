@@ -12,6 +12,7 @@ class App extends React.Component {
 			<div>
 				<h1>sendh3lp's Room Temperature Monitoring Dashboard</h1>
 				<TimeSeriesGraphView />
+				{this.props.timeseries.map(item => <div>{item.timestamp_day}</div>)}
 				<FloorplanView />
 			</div>
 		);

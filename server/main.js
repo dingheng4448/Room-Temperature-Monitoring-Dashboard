@@ -3,39 +3,46 @@ import { Meteor } from 'meteor/meteor';
 import { TimeseriesCollection } from '/imports/api/timeseries';
 
 Meteor.startup(() => {
+	
 	// If the TimeseriesCollection collection is empty, populate it with data from room-temperatures.csv.
 	if (TimeseriesCollection.find().count() === 0) {
-		// Read csv and dump into TimeseriesCollection
+		
+		// Read room-temperatures.csv
+		let csv = Assets.getText("room-temperatures.csv");
+		var rows = csv.split(/\r\n|\n/);
+		// Remove headers row from csv
+		rows.shift();
+		
+		console.log("Loading...");
+		
+		// Parse into custom JSON schema and dump into TimeseriesCollection
+		for (row of rows) {
+			if (row.length > 0) { 
+				var data = row.split(",");
+				let roomNo = data[0];
+				let timestamp = data[1];
+				let temperature = data[2];
+				
+				var timestamp_data = timestamp.split("T");
+				let timestamp_day = timestamp_data[0];
+				let timestamp_time = timestamp_data[1];
+				var time_data = timestamp_time.split(":");
+				let timestamp_hour = time_data[0];
+				let timestamp_min = time_data[1];
+				
+				var setObject = {};
+				setObject["timestamp_time." + timestamp_hour + "." + timestamp_min + "." + roomNo] = temperature;
+				
+				// Insert new object if it doesn't exist, else add new fields to existing object
+				let result = TimeseriesCollection.update({
+					timestamp_day : timestamp_day
+				},
+				{ $set: setObject }, 
+				{ upsert: true });
+			}
+		}
+		
+		console.log("Server Setup Complete");
 	}
 });
 
-//import { LinksCollection } from '/imports/api/links';
-
-/*function insertLink({ title, url }) {
-  LinksCollection.insert({title, url, createdAt: new Date()});
-}
-
-Meteor.startup(() => {
-  // If the Links collection is empty, add some data.
-  if (LinksCollection.find().count() === 0) {
-    insertLink({
-      title: 'Do the Tutorial',
-      url: 'https://www.meteor.com/tutorials/react/creating-an-app'
-    });
-
-    insertLink({
-      title: 'Follow the Guide',
-      url: 'http://guide.meteor.com'
-    });
-
-    insertLink({
-      title: 'Read the Docs',
-      url: 'https://docs.meteor.com'
-    });
-
-    insertLink({
-      title: 'Discussions',
-      url: 'https://forums.meteor.com'
-    });
-  }
-});*/
