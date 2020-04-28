@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 
 import { TimeseriesCollection } from '/imports/api/timeseries';
 
+// Code to be run on starting up the server
 Meteor.startup(() => {
 	
 	// If the TimeseriesCollection collection is empty, populate it with data from room-temperatures.csv.
@@ -33,7 +34,7 @@ Meteor.startup(() => {
 				var setObject = {};
 				setObject["timestamp_time." + timestamp_hour + "." + timestamp_min + "." + roomNo] = temperature;
 				
-				// Insert new object if it doesn't exist, else add new fields to existing object
+				// Insert new timestamp_day if it doesn't exist, else add new fields to existing timestamp_day
 				let result = TimeseriesCollection.update({
 					timestamp_day : timestamp_day
 				},
