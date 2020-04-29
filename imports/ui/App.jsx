@@ -1,7 +1,6 @@
 import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 
-
 import { TimeseriesCollection } from '../api/timeseries.js';
 
 import TimeSeriesGraphView from './TimeSeriesGraphView';
@@ -20,7 +19,9 @@ class App extends React.Component {
 	}
 }
 
+// Subscribes to data from server based on user inputs
 export default withTracker(() => {
+	Meteor.subscribe('queriedResults', "2013-10-02");
 	return {
 		timeseries: TimeseriesCollection.find({}).fetch(),
 	};

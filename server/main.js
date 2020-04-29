@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 
 import { TimeseriesCollection } from '/imports/api/timeseries';
 
-// Code to be run on starting up the server
+// Code to be run on starting up the server to setup server database
 Meteor.startup(() => {
 	
 	// If the TimeseriesCollection collection is empty, populate it with data from room-temperatures.csv.
