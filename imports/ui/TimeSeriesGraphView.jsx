@@ -10,9 +10,12 @@ class TimeSeriesGraphView extends React.Component {
 	
 	render() { 
 		return ( 
-			<div id="graph-container">
-				<div id="graph" ref={this.graphRef} style={{width: "75%"}}></div>
-				<div id="legend"></div>
+			<div id="time-series-graph-view">
+				<GraphControls />
+				<div id="graph-container" style={{height: "320px"}}>
+					<div id="graph" ref={this.graphRef} style={{width: "75%"}}></div>
+					<div id="legend"></div>
+				</div>
 			</div>
 		);
 	}
@@ -36,7 +39,7 @@ class TimeSeriesGraphView extends React.Component {
 			'Room 5 Temp', 'Room 6 Temp'],
 			animatedZooms: true,
 			connectSeparatedPoints: true,
-			ylabel: 'Temperature (C)'
+			ylabel: 'Temperature (&#8451;)'
         });
     }
 	
@@ -60,9 +63,33 @@ class TimeSeriesGraphView extends React.Component {
 				'Room 5 Temp', 'Room 6 Temp'],
 				animatedZooms: true,
 				connectSeparatedPoints: true,
-				ylabel: 'Temperature (C)'
+				ylabel: 'Temperature (&#8451;)'
 			});
 		}
+	}
+}
+
+// Renders the GraphControls.
+class GraphControls extends React.Component {
+	render() {
+		return (
+			<div id="graph-controls">
+				<div class="controls">
+					<label for="startDate">Start: </label>
+					<input type="date" id="startDate" name="startDate" />
+					<input type="time" id="startTime" name="startTime" style={{marginLeft: "2px"}} />
+				</div>
+				<div class="controls">
+					<label for="endDate">End: </label>
+					<input type="date" id="endDate" name="endDate" />
+					<input type="time" id="endTime" name="endTime" style={{marginLeft: "2px"}} />
+				</div>
+				<div class="controls">
+					<input type="range" id="sampleSizeSlider" name="sampleSizeSlider" />
+					<span id="sampleSize" style={{marginLeft: "10px"}}>999 samples</span>
+				</div>
+			</div>
+		);
 	}
 }
 
