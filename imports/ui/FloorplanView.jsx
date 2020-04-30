@@ -7,13 +7,20 @@ class FloorplanView extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {isR0Selected : true,
-		isR1Selected: true,
-		isR2Selected: true};
+		this.state = {
+			isSelectedMap : this.props.isSelectedMap,
+			isR0Selected : true,
+			isR1Selected: true,
+			isR2Selected: true};
+
 		
 	}
-
+	
 	// probably find a nicer way to do this handle clicks
+	// handleRoomClicks = (event) => {
+		
+	// }
+
 	handleR0Click = (event) => {
 		this.setState({isR0Selected: this.state.isR0Selected ? false : true});
 	}
@@ -27,6 +34,9 @@ class FloorplanView extends React.Component {
 	}
 
 	render() { 	
+		
+		console.log(this.state.isSelectedMap);
+		console.log(" the test variable we passed in " + this.state.testVariable);
 		// to be refactored out and passed from the main class
 		var tempValues = new Map();
 		tempValues.set('r0', 80);
