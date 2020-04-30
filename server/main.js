@@ -25,7 +25,7 @@ Meteor.startup(() => {
 				let temperature = data[2];
 				
 				var setObject = {};
-				setObject["temperatures." + roomNo] = temperature;
+				setObject["room_" + roomNo + "_temp"] = temperature;
 				
 				// Insert new timestamp if it doesn't exist, else add new fields to existing timestamp
 				let result = TimeseriesCollection.update({
