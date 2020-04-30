@@ -26,6 +26,16 @@ class App extends React.Component {
 		isSelectedMap.set('r5', true);
 		isSelectedMap.set('r6', true);
 
+		// temp hard coded values to be obtained from model class (should just get ave temp)
+		const tempValues = new Map();
+		tempValues.set('r0', 80);
+		tempValues.set('r1', 93);
+		tempValues.set('r2', 8);
+		tempValues.set('r3', 16);	
+		tempValues.set('r4', 3);
+		tempValues.set('r5', 56);
+		tempValues.set('r6', 57);
+
 
 		return ( 
 			<div>
@@ -33,6 +43,7 @@ class App extends React.Component {
 				<TimeSeriesGraphView />
 				<FloorplanView 
 				isSelectedMap = {isSelectedMap}
+				tempValues = {tempValues}
 				/>
 			</div>
 		);

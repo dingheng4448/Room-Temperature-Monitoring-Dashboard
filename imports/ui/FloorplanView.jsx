@@ -9,45 +9,21 @@ class FloorplanView extends React.Component {
 
 		this.state = {
 			isSelectedMap : this.props.isSelectedMap,
-			isR0Selected : true,
-			isR1Selected: true,
-			isR2Selected: true};
-
+			tempValues : this.props.tempValues};
 		
 	}
-	
-	// probably find a nicer way to do this handle clicks
-	// handleRoomClicks = (event) => {
-		
-	// }
 
-	handleR0Click = (event) => {
-		this.setState({isR0Selected: this.state.isR0Selected ? false : true});
-	}
+	// set the state of room selected ON/OFF upon click
+	handleRoomClicks = (event, roomNum) => {
+		var tempMap = this.state.isSelectedMap; 
+		tempMap.set(roomNum, tempMap.get(roomNum) ? false : true);
 
-	handleR1Click = (event) => {
-		this.setState({isR1Selected: this.state.isR1Selected ? false : true});
-	}
-
-	handleR2Click = (event) => {
-		this.setState({isR2Selected: this.state.isR2Selected ? false : true});
+		this.setState({isSelectedMap: tempMap});
 	}
 
 	render() { 	
 		
-		console.log(this.state.isSelectedMap);
-		console.log(" the test variable we passed in " + this.state.testVariable);
-		// to be refactored out and passed from the main class
-		var tempValues = new Map();
-		tempValues.set('r0', 80);
-		tempValues.set('r1', 93);
-		tempValues.set('r2', 8);
-		tempValues.set('r3', 16);	
-		tempValues.set('r4', 3);
-		tempValues.set('r5', 56);
-		tempValues.set('r6', 57);
-		
-		var sortedTemp = new Map([...tempValues.entries()].sort((a,b) => a[1] - b[1]));
+		var sortedTemp = new Map([...this.state.tempValues.entries()].sort((a,b) => a[1] - b[1]));
 		console.log(sortedTemp);
 		console.log(sortedTemp.get('r0'));
 
@@ -67,22 +43,28 @@ class FloorplanView extends React.Component {
 			<div className="floorplan">
 				<Room 
 				roomNum={0} 
-				colour={this.state.isR0Selected ? sortedTemp.get('r0') : "#ffffff"}
-				onClick={this.handleR0Click}/>
+				colour={this.state.isSelectedMap.get('r0') ? sortedTemp.get('r0') : "#ffffff"}
+				onClick={(event) => this.handleRoomClicks(event, 'r0')}/>
 				<Corridor name={""}/>
 				<Corridor name={"floorplan"}/>
 				<Room roomNum={1}
-				colour={this.state.isR1Selected ? sortedTemp.get('r1') : "#ffffff"}
-				onClick={this.handleR1Click}/>
+				colour={this.state.isSelectedMap.get('r1') ? sortedTemp.get('r1') : "#ffffff"}
+				onClick={(event) => this.handleRoomClicks(event, 'r1')}/>
 				<Room roomNum={2} 
-				colour={this.state.isR2Selected ? sortedTemp.get('r2') : "#ffffff"}
-				onClick={this.handleR2Click}/>
-				<Room roomNum={3} colour={sortedTemp.get('r3')}/>
-				<Room roomNum={4} colour={sortedTemp.get('r4')}/>
-				<Room roomNum={5} colour={sortedTemp.get('r5')}/>
-				<Room roomNum={6} colour={sortedTemp.get('r6')}/>
-
-				
+				colour={this.state.isSelectedMap.get('r2') ? sortedTemp.get('r2') : "#ffffff"}
+				onClick={(event) => this.handleRoomClicks(event, 'r2')}/>
+				<Room roomNum={3} 
+				colour={this.state.isSelectedMap.get('r3') ? sortedTemp.get('r3') : "#ffffff"}
+				onClick={(event) => this.handleRoomClicks(event, 'r3')}/>
+				<Room roomNum={4} 
+				colour={this.state.isSelectedMap.get('r4') ? sortedTemp.get('r4') : "#ffffff"}
+				onClick={(event) => this.handleRoomClicks(event, 'r4')}/>
+				<Room roomNum={5} 
+				colour={this.state.isSelectedMap.get('r5') ? sortedTemp.get('r5') : "#ffffff"}
+				onClick={(event) => this.handleRoomClicks(event, 'r5')}/>
+				<Room roomNum={6} 
+				colour={this.state.isSelectedMap.get('r6') ? sortedTemp.get('r6') : "#ffffff"}
+				onClick={(event) => this.handleRoomClicks(event, 'r6')}/>	
 			</div>
 		);
 	}
