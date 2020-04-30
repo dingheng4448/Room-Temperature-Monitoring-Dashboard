@@ -1,5 +1,6 @@
 import React from 'react';
 import Dygraph from 'dygraphs';
+import './time-series-graph-view.css';
 
 class TimeSeriesGraphView extends React.Component {	
 	constructor(props) {
@@ -7,10 +8,11 @@ class TimeSeriesGraphView extends React.Component {
 		this.graphRef = React.createRef();
 	}
 	
-	render() { 		
+	render() { 
 		return ( 
-			<div>
-				<div ref={this.graphRef}></div>
+			<div id="graph-container">
+				<div id="graph" ref={this.graphRef} style={{width: "75%"}}></div>
+				<div id="legend"></div>
 			</div>
 		);
 	}
@@ -27,12 +29,14 @@ class TimeSeriesGraphView extends React.Component {
 		
 		new Dygraph(this.graphRef.current, data, {
 			legend: 'always',
-			animatedZooms: true,
+			labelsDiv: legend,
+			labelsSeparateLines: true,
 			labels: ['Date', 'Room 0 Temp', 'Room 1 Temp', 
 			'Room 2 Temp', 'Room 3 Temp', 'Room 4 Temp', 
 			'Room 5 Temp', 'Room 6 Temp'],
-			ylabel: 'Temperature (C)',
-			connectSeparatedPoints: true
+			animatedZooms: true,
+			connectSeparatedPoints: true,
+			ylabel: 'Temperature (C)'
         });
     }
 	
@@ -49,12 +53,14 @@ class TimeSeriesGraphView extends React.Component {
 		
 			new Dygraph(this.graphRef.current, data, {
 				legend: 'always',
-				animatedZooms: true,
+				labelsDiv: legend,
+				labelsSeparateLines: true,
 				labels: ['Date', 'Room 0 Temp', 'Room 1 Temp', 
 				'Room 2 Temp', 'Room 3 Temp', 'Room 4 Temp', 
 				'Room 5 Temp', 'Room 6 Temp'],
-				ylabel: 'Temperature (C)',
-				connectSeparatedPoints: true
+				animatedZooms: true,
+				connectSeparatedPoints: true,
+				ylabel: 'Temperature (C)'
 			});
 		}
 	}
