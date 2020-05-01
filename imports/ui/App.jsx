@@ -57,33 +57,17 @@ class App extends React.Component {
 	}
 
 	updateRoomState = (event, roomNum) => {
-		// debugging code
-		console.log("successfully called");
-		console.log("the room number is " + roomNum);
-		
-		var roomStates = this.state.tempDashboardState.value;
-		var roomStateString = roomStates.room0.toString();
-		console.log("the initial state is " + roomStateString);
-
-		// if true, set to unselected
-		// if false, set to selected
-		var newState = (roomStateString == 'selected') ? 'unselected' : 'selected'
-
-		console.log("the new state is " + newState);
-		// to be deleted
-
 		// find action being carried out by user
 		var action = 'CLICK_'
 		action = action.concat(roomNum.toUpperCase());
 		console.log("the action is " + action);
+
 		// send action to xstate machine
 		this.service.send( action );
 		
 	}
 
 	render() { 
-		// let currentState = this.state.tempDashboardState.value;
-		// console.log("look here " + currentState.room0);
 		return ( 
 			<div>
 				<h1>sendh3lp's Room Temperature Monitoring Dashboard</h1>
