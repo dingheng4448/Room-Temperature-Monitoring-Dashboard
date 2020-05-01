@@ -57,6 +57,7 @@ class App extends React.Component {
 	}
 
 	updateRoomState = (event, roomNum) => {
+		// debugging code
 		console.log("successfully called");
 		console.log("the room number is " + roomNum);
 		
@@ -69,7 +70,14 @@ class App extends React.Component {
 		var newState = (roomStateString == 'selected') ? 'unselected' : 'selected'
 
 		console.log("the new state is " + newState);
-		this.service.send('CLICK_R0');
+		// to be deleted
+
+		// find action being carried out by user
+		var action = 'CLICK_'
+		action = action.concat(roomNum.toUpperCase());
+		console.log("the action is " + action);
+		// send action to xstate machine
+		this.service.send( action );
 		
 	}
 
@@ -81,7 +89,6 @@ class App extends React.Component {
 				<h1>sendh3lp's Room Temperature Monitoring Dashboard</h1>
 				<TimeSeriesGraphView />
 				<FloorplanView 
-				isSelectedMap = {this.state.isSelectedMap}
 				tempValues = {this.state.tempValues}
 				tempDashboardState = {this.state.tempDashboardState.value}
 				onRoomClick={(event, roomNum) => this.updateRoomState(event, roomNum)}
