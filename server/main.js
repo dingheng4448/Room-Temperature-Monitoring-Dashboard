@@ -1,5 +1,4 @@
 import { Meteor } from 'meteor/meteor';
-
 import { TimeseriesCollection } from '/imports/api/timeseries';
 
 // Code to be run on starting up the server to setup server database
