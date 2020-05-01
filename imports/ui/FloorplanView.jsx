@@ -9,7 +9,9 @@ class FloorplanView extends React.Component {
 
 		this.state = {
 			isSelectedMap : this.props.isSelectedMap,
-			tempValues : this.props.tempValues};
+			tempValues : this.props.tempValues,
+		};
+		
 		
 	}
 
@@ -31,19 +33,22 @@ class FloorplanView extends React.Component {
 			index++;
 		}
 		return sortedTemp;
+		
 
 	}
 
 	render() { 	
+
 		var roomColours = this.findRoomColours(this.state.tempValues);
 
 		return ( 
-			
+			// might wanna consider writing a loop here if time permit
 			<div className="floorplan">
 				<Room 
-				roomNum={0} 
-				colour={this.state.isSelectedMap.get('r0') ? roomColours.get('r0') : "#ffffff"}
-				onClick={(event) => this.handleRoomClicks(event, 'r0')}/>
+				roomNum={0}
+				colour={(this.props.tempDashboardState.room0.toString() == 'selected') ? roomColours.get('r0') : "#ffffff"} 
+				// colour={this.state.isSelectedMap.get('r0') ? roomColours.get('r0') : "#ffffff"}
+				onClick={(event) => this.props.onRoomClick(event, 'room0')}/>
 				<Corridor name={""}/>
 				<Corridor name={"floorplan"}/>
 				<Room roomNum={1}
