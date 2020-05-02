@@ -19,7 +19,7 @@ class TimeSeriesGraphView extends React.Component {
 	// Load graph once its container div is rendered
 	componentDidMount() {
 		this.graph = this.loadGraph();
-    }
+	}
 	
 	// Update graph upon changes to timeseries data or start/end/slider inputs
 	componentDidUpdate(prevProps, prevState) {
@@ -43,15 +43,47 @@ class TimeSeriesGraphView extends React.Component {
 			var samplesPerLine = Math.pow(this.state.baseValue, this.state.currentSliderValue);
 			var skipSize = Math.ceil(maxDatePoints/samplesPerLine);
 			
-			// Convert JSON timeseries data into CSV
+			// Convert JSON timeseries data into CSV and calculate average temps
 			var data = "";
+			var newDatePoints = 0;
+			var r0 = 0;
+			var r1 = 0;
+			var r2 = 0;
+			var r3 = 0;
+			var r4 = 0; 
+			var r5 = 0;
+			var r6 = 0;
 			for (var i=0; i < maxDatePoints; i += skipSize) {
 				var item = this.props.timeseries[i];
 				data += item.timestamp + ',' + (item.room_0_temp || "NaN") + ',' +
 				(item.room_1_temp || "NaN") + ',' + (item.room_2_temp || "NaN") + ',' +
 				(item.room_3_temp || "NaN") + ',' + (item.room_4_temp || "NaN") + ',' +
 				(item.room_5_temp || "NaN") + ',' + (item.room_6_temp || "NaN") + "\n";
+				
+				r0 += parseFloat(item.room_0_temp || 0);
+				r1 += parseFloat(item.room_1_temp || 0);
+				r2 += parseFloat(item.room_2_temp || 0);
+				r3 += parseFloat(item.room_3_temp || 0);
+				r4 += parseFloat(item.room_4_temp || 0);
+				r5 += parseFloat(item.room_5_temp || 0);
+				r6 += parseFloat(item.room_6_temp || 0);
+				
+				newDatePoints++;
 			}
+			/*console.log(r0/newDatePoints);
+			console.log(r1/newDatePoints);
+			console.log(r2/newDatePoints);
+			console.log(r3/newDatePoints);
+			console.log(r4/newDatePoints);
+			console.log(r5/newDatePoints);
+			console.log(r6/newDatePoints);*/
+			this.props.tempValues.set('r0', r0/newDatePoints);
+			this.props.tempValues.set('r1', r1/newDatePoints);
+			this.props.tempValues.set('r2', r2/newDatePoints);
+			this.props.tempValues.set('r3', r3/newDatePoints);	
+			this.props.tempValues.set('r4', r4/newDatePoints);
+			this.props.tempValues.set('r5', r5/newDatePoints);
+			this.props.tempValues.set('r6', r6/newDatePoints);
 			
 			// Uncomment to include end point in graph
 			/*var lastRow = this.props.timeseries[this.props.timeseries.length - 1];

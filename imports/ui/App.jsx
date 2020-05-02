@@ -14,7 +14,7 @@ class App extends React.Component {
 		this.defaultMaxDate = "2013-12-03";
 		
 		// temp hard coded values to be obtained from model class (should just get ave temp)
-		const tempValues = new Map();
+		var tempValues = new Map();
 		tempValues.set('r0', 80);
 		tempValues.set('r1', 93);
 		tempValues.set('r2', 8);
@@ -191,6 +191,7 @@ class App extends React.Component {
 			<div>
 				<h3 id="header">sendh3lp's Room Temperature Monitoring Dashboard</h3>
 				<TimeSeriesGraphContainer 
+					tempValues={this.state.tempValues}
 					minDate={this.state.minDate}
 					maxDate={this.state.maxDate}
 					inputStartString={this.state.inputStartString} 
@@ -204,9 +205,9 @@ class App extends React.Component {
 					onPanZoom={this.updateInputFields}
 				/>
 				<FloorplanView 
-				tempValues = {this.state.tempValues}
-				tempDashboardState = {this.state.tempDashboardState.value}
-				onRoomClick={(event, roomNum) => this.updateRoomState(event, roomNum)}
+					tempValues = {this.state.tempValues}
+					tempDashboardState = {this.state.tempDashboardState.value}
+					onRoomClick={(event, roomNum) => this.updateRoomState(event, roomNum)}
 				/>
 			</div>
 		);
