@@ -39,7 +39,6 @@ class FloorplanView extends React.Component {
 				<Room 
 				roomNum={0}
 				colour={(tempDashboardState.room0.toString() == 'selected') ? roomColours.get('r0') : "#ffffff"} 
-				// colour={this.state.isSelectedMap.get('r0') ? roomColours.get('r0') : "#ffffff"}
 				onClick={(event) => this.props.onRoomClick(event, 'room0')}/>
 				<Corridor name={""}/>
 				<Corridor name={"floorplan"}/>

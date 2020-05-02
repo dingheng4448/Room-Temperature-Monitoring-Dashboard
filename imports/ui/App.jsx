@@ -14,15 +14,6 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 
-		const isSelectedMap = new Map();
-		isSelectedMap.set('r0', true);
-		isSelectedMap.set('r1', true);
-		isSelectedMap.set('r2', true);
-		isSelectedMap.set('r3', true);
-		isSelectedMap.set('r4', true);
-		isSelectedMap.set('r5', true);
-		isSelectedMap.set('r6', true);
-
 		// temp hard coded values to be obtained from model class (should just get ave temp)
 		const tempValues = new Map();
 		tempValues.set('r0', 80);
@@ -35,7 +26,6 @@ class App extends React.Component {
 
 		
 		this.state = {
-			isSelectedMap: isSelectedMap,
 			tempValues: tempValues,
 			tempDashboardState: tempDashboardMachine.initialState
 		}
@@ -64,7 +54,11 @@ class App extends React.Component {
 
 		// send action to xstate machine
 		this.service.send( action );
-		
+	}
+
+	// function to find average temperatures
+	findAveTemp = (temperatures, sampleSize) => {
+
 	}
 
 	render() { 
