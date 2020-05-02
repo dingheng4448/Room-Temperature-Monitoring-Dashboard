@@ -125,11 +125,13 @@ class App extends React.Component {
 		if (newStartDate < dataStartDate || newStartDate > dataEndDate) {
 			this.setState({
 				dataStartString: newInputStartString,
-				inputStartString: newInputStartString
+				inputStartString: newInputStartString,
+				inputEndString: newInputEndString
 			});
 		} else if (newEndDate < dataStartDate || newEndDate > dataEndDate) {
 			this.setState({
 				dataEndString: newInputEndString,
+				inputStartString: newInputStartString,
 				inputEndString: newInputEndString
 			});
 		} else {

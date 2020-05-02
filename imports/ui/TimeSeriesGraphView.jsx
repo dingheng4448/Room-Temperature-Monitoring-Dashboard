@@ -43,10 +43,10 @@ class TimeSeriesGraphView extends React.Component {
 			// Convert JSON timeseries data into CSV
 			var data = "";
 			this.props.timeseries.forEach((item) => {
-				data += item.timestamp + ',' + item.room_0_temp + ',' +
-				item.room_1_temp + ',' + item.room_2_temp + ',' +
-				item.room_3_temp + ',' + item.room_4_temp + ',' +
-				(item.room_5_temp || "NaN") + ',' + item.room_6_temp + "\n";
+				data += item.timestamp + ',' + (item.room_0_temp || "NaN") + ',' +
+				(item.room_1_temp || "NaN") + ',' + (item.room_2_temp || "NaN") + ',' +
+				(item.room_3_temp || "NaN") + ',' + (item.room_4_temp || "NaN") + ',' +
+				(item.room_5_temp || "NaN") + ',' + (item.room_6_temp || "NaN") + "\n";
 			});
 			
 			// Set graph window to start/end inputs
