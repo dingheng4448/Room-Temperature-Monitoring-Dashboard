@@ -7,28 +7,13 @@ class TimeSeriesGraphView extends React.Component {
 		super(props);
 		this.graphRef = React.createRef();
 		var graph = null;
-	}
-	
-	render() { 
-		return ( 
-			<div id="time-series-graph-view">
-				<GraphControls 
-					minDate={this.props.minDate}
-					maxDate={this.props.maxDate}
-					inputStartString={this.props.inputStartString} 
-					inputEndString={this.props.inputEndString}
-					onChangeStartDate={this.props.onChangeStartDate}
-					onChangeStartTime={this.props.onChangeStartTime} 
-					onChangeEndDate={this.props.onChangeEndDate} 
-					onChangeEndTime={this.props.onChangeEndTime}
-					onReset={this.props.onReset}
-				/>
-				<div id="graph-container" style={{height: "320px"}}>
-					<div id="graph" ref={this.graphRef} style={{width: "75%"}}></div>
-					<div id="legend"></div>
-				</div>
-			</div>
-		);
+		
+		this.state = {
+			minSliderValue: 1,
+			maxSliderValue: 2,
+			currentSliderValue: 1,
+			baseValue: 2
+		};
 	}
 	
 	// Load graph once its container div is rendered
@@ -36,18 +21,44 @@ class TimeSeriesGraphView extends React.Component {
 		this.graph = this.loadGraph();
     }
 	
-	// Update graph upon changes to timeseries data or start/end inputs
-	componentDidUpdate(prevProps) {
-		if ((this.props.timeseries !== prevProps.timeseries) && this.graph != null) {
+	// Update graph upon changes to timeseries data or start/end/slider inputs
+	componentDidUpdate(prevProps, prevState) {
+		if (((this.props.timeseries !== prevProps.timeseries) && this.graph != null) ||
+			((this.state.currentSliderValue !== prevState.currentSliderValue) && this.graph != null)) {
+			
+			// Calculate max slider range based on total number of date points in timeseries
+			var maxDatePoints = this.props.timeseries.length;
+			var maxSliderValue = Math.ceil(
+				Math.log(maxDatePoints) / Math.log(this.state.baseValue)
+			);
+			
+			// Update max slider range if timeseries data was changed
+			if (this.state.maxSliderValue != maxSliderValue) {
+				this.setState({
+					maxSliderValue: maxSliderValue
+				});
+			}
+			
+			// Calculate interval to skip when loading data into graph
+			var samplesPerLine = Math.pow(this.state.baseValue, this.state.currentSliderValue);
+			var skipSize = Math.ceil(maxDatePoints/samplesPerLine);
 			
 			// Convert JSON timeseries data into CSV
 			var data = "";
-			this.props.timeseries.forEach((item) => {
+			for (var i=0; i < maxDatePoints; i += skipSize) {
+				var item = this.props.timeseries[i];
 				data += item.timestamp + ',' + (item.room_0_temp || "NaN") + ',' +
 				(item.room_1_temp || "NaN") + ',' + (item.room_2_temp || "NaN") + ',' +
 				(item.room_3_temp || "NaN") + ',' + (item.room_4_temp || "NaN") + ',' +
 				(item.room_5_temp || "NaN") + ',' + (item.room_6_temp || "NaN") + "\n";
-			});
+			}
+			
+			// Uncomment to include end point in graph
+			/*var lastRow = this.props.timeseries[this.props.timeseries.length - 1];
+			data += lastRow.timestamp + ',' + (lastRow.room_0_temp || "NaN") + ',' +
+				(lastRow.room_1_temp || "NaN") + ',' + (lastRow.room_2_temp || "NaN") + ',' +
+				(lastRow.room_3_temp || "NaN") + ',' + (lastRow.room_4_temp || "NaN") + ',' +
+				(lastRow.room_5_temp || "NaN") + ',' + (lastRow.room_6_temp || "NaN") + "\n";*/
 			
 			// Set graph window to start/end inputs
 			var minX = Date.parse(this.props.inputStartString);
@@ -95,6 +106,40 @@ class TimeSeriesGraphView extends React.Component {
 		
 		return(g);
 	}
+	
+	// Update currentSliderValue upon changes in slider input
+	updateCurrentSliderValue = e => {
+		this.setState({
+			currentSliderValue: e.target.value
+		});
+	}
+	
+	render() { 
+		return ( 
+			<div id="time-series-graph-view">
+				<GraphControls 
+					minDate={this.props.minDate}
+					maxDate={this.props.maxDate}
+					inputStartString={this.props.inputStartString} 
+					inputEndString={this.props.inputEndString}
+					onChangeStartDate={this.props.onChangeStartDate}
+					onChangeStartTime={this.props.onChangeStartTime} 
+					onChangeEndDate={this.props.onChangeEndDate} 
+					onChangeEndTime={this.props.onChangeEndTime}
+					
+					minSliderValue={this.state.minSliderValue}
+					maxSliderValue={this.state.maxSliderValue}
+					currentSliderValue={this.state.currentSliderValue}
+					baseValue={this.state.baseValue}
+					onChangeSlider={this.updateCurrentSliderValue}
+				/>
+				<div id="graph-container" style={{height: "320px"}}>
+					<div id="graph" ref={this.graphRef} style={{width: "75%"}}></div>
+					<div id="legend"></div>
+				</div>
+			</div>
+		);
+	}
 }
 
 // Renders the GraphControls
@@ -130,8 +175,14 @@ class GraphControls extends React.Component {
 					/>
 				</div>
 				<div className="controls">
-					<input type="range" id="sampleSizeSlider" name="sampleSizeSlider" />
-					<span id="sampleSize" style={{marginLeft: "10px"}}>999 samples</span>
+					<input type="range" id="sampleSizeSlider" name="sampleSizeSlider" 
+						min={this.props.minSliderValue} max={this.props.maxSliderValue} 
+						value={this.props.currentSliderValue} onChange={this.props.onChangeSlider}
+					/>
+					<span id="sampleSize" style={{marginLeft: "10px"}}>
+						{this.props.baseValue}^{this.props.currentSliderValue} = 
+						{Math.pow(this.props.baseValue, this.props.currentSliderValue)} samples max per line
+					</span>
 				</div>
 			</div>
 		);

@@ -158,7 +158,6 @@ class App extends React.Component {
 					onChangeEndDate={this.updateEndDate} 
 					onChangeEndTime={this.updateEndTime} 
 					onPanZoom={this.updateInputFields}
-					onReset={this.resetInputFields}
 				/>
 				<FloorplanView />
 			</div>
