@@ -6,6 +6,7 @@ class TimeSeriesGraphView extends React.Component {
 	constructor(props) {
 		super(props);
 		this.graphRef = React.createRef();
+		var graph = null;
 	}
 	
 	render() { 
@@ -14,8 +15,8 @@ class TimeSeriesGraphView extends React.Component {
 				<GraphControls 
 					minDate={this.props.minDate}
 					maxDate={this.props.maxDate}
-					startTimestamp={this.props.startTimestamp} 
-					endTimestamp={this.props.endTimestamp}
+					inputStartString={this.props.inputStartString} 
+					inputEndString={this.props.inputEndString}
 					onChangeStartDate={this.props.onChangeStartDate}
 					onChangeStartTime={this.props.onChangeStartTime} 
 					onChangeEndDate={this.props.onChangeEndDate} 
@@ -32,29 +33,63 @@ class TimeSeriesGraphView extends React.Component {
 	
 	// Load graph once its container div is rendered
 	componentDidMount() {
-		this.loadGraph();
+		this.graph = this.loadGraph();
     }
 	
-	// Reload graph upon changes to timeseries data
+	// Update graph upon changes to timeseries data or start/end inputs
 	componentDidUpdate(prevProps) {
-		if (this.props.timeseries !== prevProps.timeseries) {
-			this.loadGraph();
+		if ((this.props.timeseries !== prevProps.timeseries) && this.graph != null) {
+			
+			// Convert JSON timeseries data into CSV
+			var data = "";
+			this.props.timeseries.forEach((item) => {
+				data += item.timestamp + ',' + item.room_0_temp + ',' +
+				item.room_1_temp + ',' + item.room_2_temp + ',' +
+				item.room_3_temp + ',' + item.room_4_temp + ',' +
+				(item.room_5_temp || "NaN") + ',' + item.room_6_temp + "\n";
+			});
+		
+			this.graph.updateOptions({ 
+				file: data,
+				dateWindow: [Date.parse(this.props.inputStartString), Date.parse(this.props.inputEndString)]
+			});
 		}
 	}
 	
-	// Function to load timeseries data into Dygraph
+	// Function to setup Dygraph
 	loadGraph() {
 		let onZoom = this.props.onZoom;
-		
 		var data = "";
-        this.props.timeseries.forEach((item) => {
-            data += item.timestamp + ',' + item.room_0_temp + ',' +
-			item.room_1_temp + ',' + item.room_2_temp + ',' +
-			item.room_3_temp + ',' + item.room_4_temp + ',' +
-			(item.room_5_temp || "NaN") + ',' + item.room_6_temp + "\n";
-        });
+
+		// Define custom interaction model for Dygraph
+		/*const myInteractions = Object.assign({}, Dygraph.defaultInteractionModel, {
+      dblclick: (event, g, context) => {
+        console.log("double-click!", event, g, context);
+      },
+      mousedown: (event, g, context) => {
+        console.log("start mousedown");
+        context.initializeMouseDown(event, g, context);
+		if (event.altKey || event.shiftKey) {
+  Dygraph.startZoom(event, g, context);
+} else {
+  Dygraph.startPan(event, g, context);
+} 
+        //Dygraph.startPan(event, g, context);
+      },
+      mousemove: (event, g, context) => {
+        if(context.isPanning) {
+          console.log("mouse is moving", event, g, context);
+          Dygraph.movePan(event, g, context);
+        }
+      },
+      mouseup: (event, g, context) => {
+        console.log("mouseup", event, g, context);
+        Dygraph.endPan(event, g, context);
+        context.isPanning = false;
+      }
+});*/
 		
-		new Dygraph(this.graphRef.current, data, {
+		var g = new Dygraph(this.graphRef.current, data, {
 			legend: 'always',
 			labelsDiv: legend,
 			labelsSeparateLines: true,
@@ -65,20 +100,24 @@ class TimeSeriesGraphView extends React.Component {
 			connectSeparatedPoints: true,
 			ylabel: 'Temperature (&#8451;)',
 			
+			
+			
 			zoomCallback: function(minX, maxX, yRanges) {
 				onZoom(minX, maxX);
 			}
         });
+		
+		return(g);
 	}
 }
 
 // Renders the GraphControls
 class GraphControls extends React.Component {
 	render() {
-		let startDate = this.props.startTimestamp.split("T")[0];
-		let startTime = this.props.startTimestamp.split("T")[1];
-		let endDate = this.props.endTimestamp.split("T")[0];
-		let endTime = this.props.endTimestamp.split("T")[1];
+		let startDate = this.props.inputStartString.split("T")[0];
+		let startTime = this.props.inputStartString.split("T")[1];
+		let endDate = this.props.inputEndString.split("T")[0];
+		let endTime = this.props.inputEndString.split("T")[1];
 		
 		return (
 			<div id="graph-controls">
@@ -107,9 +146,6 @@ class GraphControls extends React.Component {
 				<div className="controls">
 					<input type="range" id="sampleSizeSlider" name="sampleSizeSlider" />
 					<span id="sampleSize" style={{marginLeft: "10px"}}>999 samples</span>
-				</div>
-				<div className="controls">
-					<input type="button" id="resetButton" value="Reset Graph" onClick={this.props.onReset} />
 				</div>
 			</div>
 		);

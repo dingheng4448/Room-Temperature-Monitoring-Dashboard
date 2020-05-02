@@ -6,78 +6,114 @@ class App extends React.Component {
 	constructor(props){
 		super(props);	
 	
+		let defaultStartString = "2013-10-02T05:00:00";
+		let defaultEndString = "2013-10-03T00:00:00";
+		let defaultMinDate = "2013-10-02";
+		let defaultMaxDate = "2013-12-03";
+		
 		this.state = {
-			minDate: "2013-10-02",
-			maxDate: "2013-12-03",
-			startTimestamp: "2013-10-02T05:00:00",
-			endTimestamp: "2013-10-03T00:00:00",
-			oldStartTimestamp: "2013-10-02T05:00:00",
-			oldEndTimestamp: "2013-10-03T00:00:00"
+			minDate: defaultMinDate,
+			maxDate: defaultMaxDate,
+			inputStartString: defaultStartString,
+			inputEndString: defaultEndString,
+			dataStartString: defaultStartString,
+			dataEndString: defaultEndString
 		}; 
 	}
 	
-	// Update startTimestamp upon changes in start date input
+	// Update inputStartString upon changes in start date input
 	updateStartDate = e => {
-		let time = this.state.startTimestamp.split("T")[1];
-		let newStartTimestamp = e.target.value + "T" + time;
-		this.setState({
-			startTimestamp: newStartTimestamp
-		});
+		let time = this.state.inputStartString.split("T")[1];
+		let newInputStartString = e.target.value + "T" + time;
+		
+		let dataStartDate = new Date(this.state.dataStartString);
+		let dataEndDate = new Date(this.state.dataEndString);
+		let newStartDate = new Date(newInputStartString);
+		
+		if (newStartDate < dataStartDate || newStartDate > dataEndDate) {
+			this.setState({
+				dataStartString: newInputStartString,
+				inputStartString: newInputStartString
+			});
+		} else {
+			this.setState({
+				inputStartString: newInputStartString
+			});
+		}
 	}
 	
-	// Update startTimestamp upon changes in start time input
+	// Update inputStartString upon changes in start time input
 	updateStartTime = e => {
-		let date = this.state.startTimestamp.split("T")[0];
-		let newStartTimestamp = date + "T" + e.target.value + ":00";
-		this.setState({
-			startTimestamp: newStartTimestamp
-		});
+		let date = this.state.inputStartString.split("T")[0];
+		let newInputStartString = date + "T" + e.target.value + ":00";
+		
+		let dataStartDate = new Date(this.state.dataStartString);
+		let dataEndDate = new Date(this.state.dataEndString);
+		let newStartDate = new Date(newInputStartString);
+		
+		if (newStartDate < dataStartDate || newStartDate > dataEndDate) {
+			this.setState({
+				dataStartString: newInputStartString,
+				inputStartString: newInputStartString
+			});
+		} else {
+			this.setState({
+				inputStartString: newInputStartString
+			});
+		}
 	}
 	
-	// Update endTimestamp upon changes in end date input
+	// Update inputEndString upon changes in end date input
 	updateEndDate = e => {
-		let time = this.state.endTimestamp.split("T")[1];
-		let newEndTimestamp = e.target.value + "T" + time;
-		this.setState({
-			endTimestamp: newEndTimestamp
-		});
+		let time = this.state.inputEndString.split("T")[1];
+		let newInputEndString = e.target.value + "T" + time;
+		
+		let dataStartDate = new Date(this.state.dataStartString);
+		let dataEndDate = new Date(this.state.dataEndString);
+		let newEndDate = new Date(newInputEndString);
+		
+		if (newEndDate < dataStartDate || newEndDate > dataEndDate) {
+			this.setState({
+				dataEndString: newInputEndString,
+				inputEndString: newInputEndString
+			});
+		} else {
+			this.setState({
+				inputEndString: newInputEndString
+			});
+		}
 	}
 	
-	// Update endTimestamp upon changes in end time input
+	// Update inputEndString upon changes in end time input
 	updateEndTime = e => {
-		let date = this.state.endTimestamp.split("T")[0];
-		let newEndTimestamp = date + "T" + e.target.value + ":00";
-		this.setState({
-			endTimestamp: newEndTimestamp
-		});
+		let date = this.state.inputEndString.split("T")[0];
+		let newInputEndString = date + "T" + e.target.value + ":00";
+		
+		let dataStartDate = new Date(this.state.dataStartString);
+		let dataEndDate = new Date(this.state.dataEndString);
+		let newEndDate = new Date(newInputEndString);
+		
+		if (newEndDate < dataStartDate || newEndDate > dataEndDate) {
+			this.setState({
+				dataEndString: newInputEndString,
+				inputEndString: newInputEndString
+			});
+		} else {
+			this.setState({
+				inputEndString: newInputEndString
+			});
+		}
 	}
 	
-	// Update start and end timestamps upon pan/zoom
+	// Update start and end input strings upon zoom
 	updateInputFields = (minX, maxX) => {
-		let oldStartTimestamp = this.state.startTimestamp;
-		let oldEndTimestamp = this.state.endTimestamp;
-		
 		let timezoneOffset = (new Date()).getTimezoneOffset() * 60000;
-		let newStartTimestamp = (new Date(minX - timezoneOffset)).toISOString().slice(0, -8);
-		let newEndTimestamp = (new Date(maxX - timezoneOffset)).toISOString().slice(0, -8);
+		let newInputStartString = (new Date(minX - timezoneOffset)).toISOString().slice(0, -8);
+		let newInputEndString = (new Date(maxX - timezoneOffset)).toISOString().slice(0, -8);
 		
 		this.setState({
-			startTimestamp: newStartTimestamp,
-			endTimestamp: newEndTimestamp,
-			oldStartTimestamp: oldStartTimestamp,
-			oldEndTimestamp: oldEndTimestamp
-		});
-	}
-	
-	// TODO: Remove reset graph button if unnecessary
-	// Reset start and end timestamps after pan/zoom
-	resetInputFields = () => {
-		let oldStartTimestamp = this.state.oldStartTimestamp;
-		let oldEndTimestamp = this.state.oldEndTimestamp;
-		
-		this.setState({
-			startTimestamp: oldStartTimestamp,
-			endTimestamp: oldEndTimestamp
+			inputStartString: newInputStartString,
+			inputEndString: newInputEndString
 		});
 	}
 	
@@ -88,8 +124,10 @@ class App extends React.Component {
 				<TimeSeriesGraphContainer 
 					minDate={this.state.minDate}
 					maxDate={this.state.maxDate}
-					startTimestamp={this.state.startTimestamp} 
-					endTimestamp={this.state.endTimestamp}
+					inputStartString={this.state.inputStartString} 
+					inputEndString={this.state.inputEndString}
+					dataStartString={this.state.dataStartString} 
+					dataEndString={this.state.dataEndString}
 					onChangeStartDate={this.updateStartDate} 
 					onChangeStartTime={this.updateStartTime} 
 					onChangeEndDate={this.updateEndDate} 
