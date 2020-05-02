@@ -25,7 +25,7 @@ class TimeSeriesGraphView extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 		if (((this.props.timeseries !== prevProps.timeseries) && this.graph != null) ||
 			((this.state.currentSliderValue !== prevState.currentSliderValue) && this.graph != null)) {
-			
+
 			// Calculate max slider range based on total number of date points in timeseries
 			var maxDatePoints = this.props.timeseries.length;
 			var maxSliderValue = Math.ceil(
@@ -70,13 +70,6 @@ class TimeSeriesGraphView extends React.Component {
 				
 				newDatePoints++;
 			}
-			/*console.log(r0/newDatePoints);
-			console.log(r1/newDatePoints);
-			console.log(r2/newDatePoints);
-			console.log(r3/newDatePoints);
-			console.log(r4/newDatePoints);
-			console.log(r5/newDatePoints);
-			console.log(r6/newDatePoints);*/
 			this.props.tempValues.set('r0', r0/newDatePoints);
 			this.props.tempValues.set('r1', r1/newDatePoints);
 			this.props.tempValues.set('r2', r2/newDatePoints);
@@ -84,6 +77,7 @@ class TimeSeriesGraphView extends React.Component {
 			this.props.tempValues.set('r4', r4/newDatePoints);
 			this.props.tempValues.set('r5', r5/newDatePoints);
 			this.props.tempValues.set('r6', r6/newDatePoints);
+			this.props.updateTempValues();
 			
 			// Uncomment to include end point in graph
 			/*var lastRow = this.props.timeseries[this.props.timeseries.length - 1];

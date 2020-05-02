@@ -7,13 +7,13 @@ import FloorplanView from './FloorplanView.jsx';
 class App extends React.Component {	
 	constructor(props){
 		super(props);	
-
+		
 		this.defaultStartString = "2013-10-02T05:00:00";
 		this.defaultEndString = "2013-10-03T00:00:00";
 		this.defaultMinDate = "2013-10-02";
 		this.defaultMaxDate = "2013-12-03";
 		
-		// temp hard coded values to be obtained from model class (should just get ave temp)
+		// Random default temperature values for the rooms
 		var tempValues = new Map();
 		tempValues.set('r0', 80);
 		tempValues.set('r1', 93);
@@ -22,6 +22,7 @@ class App extends React.Component {
 		tempValues.set('r4', 3);
 		tempValues.set('r5', 56);
 		tempValues.set('r6', 57);
+		this.roomsRef = React.createRef();
 		
 		this.state = {
 			minDate: this.defaultMinDate,
@@ -58,6 +59,12 @@ class App extends React.Component {
 
 		// send action to xstate machine
 		this.service.send( action );
+	}
+	
+	updateTempValues = () => {
+		// Force update instead of calling setState to prevent infinite loop
+		// because setState causes graph to reload which triggers updateTempValues again
+		this.roomsRef.current.forceUpdate();
 	}
 
 	// function to find average temperatures
@@ -191,7 +198,6 @@ class App extends React.Component {
 			<div>
 				<h3 id="header">sendh3lp's Room Temperature Monitoring Dashboard</h3>
 				<TimeSeriesGraphContainer 
-					tempValues={this.state.tempValues}
 					minDate={this.state.minDate}
 					maxDate={this.state.maxDate}
 					inputStartString={this.state.inputStartString} 
@@ -203,8 +209,11 @@ class App extends React.Component {
 					onChangeEndDate={this.updateEndDate} 
 					onChangeEndTime={this.updateEndTime} 
 					onPanZoom={this.updateInputFields}
+					tempValues={this.state.tempValues}
+					updateTempValues={this.updateTempValues}
 				/>
 				<FloorplanView 
+					ref={this.roomsRef}
 					tempValues = {this.state.tempValues}
 					tempDashboardState = {this.state.tempDashboardState.value}
 					onRoomClick={(event, roomNum) => this.updateRoomState(event, roomNum)}
