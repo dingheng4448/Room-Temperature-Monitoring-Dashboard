@@ -48,46 +48,33 @@ class TimeSeriesGraphView extends React.Component {
 				item.room_3_temp + ',' + item.room_4_temp + ',' +
 				(item.room_5_temp || "NaN") + ',' + item.room_6_temp + "\n";
 			});
+			
+			// Set graph window to start/end inputs
+			var minX = Date.parse(this.props.inputStartString);
+			var maxX = Date.parse(this.props.inputEndString);
 		
 			this.graph.updateOptions({ 
 				file: data,
-				dateWindow: [Date.parse(this.props.inputStartString), Date.parse(this.props.inputEndString)]
+				dateWindow: [minX, maxX]
 			});
 		}
 	}
 	
 	// Function to setup Dygraph
 	loadGraph() {
-		let onZoom = this.props.onZoom;
+		let onPanZoom = this.props.onPanZoom;
 		var data = "";
 
-		// Define custom interaction model for Dygraph
-		/*const myInteractions = Object.assign({}, Dygraph.defaultInteractionModel, {
-      dblclick: (event, g, context) => {
-        console.log("double-click!", event, g, context);
-      },
-      mousedown: (event, g, context) => {
-        console.log("start mousedown");
-        context.initializeMouseDown(event, g, context);
-		if (event.altKey || event.shiftKey) {
-  Dygraph.startZoom(event, g, context);
-} else {
-  Dygraph.startPan(event, g, context);
-} 
-        //Dygraph.startPan(event, g, context);
-      },
-      mousemove: (event, g, context) => {
-        if(context.isPanning) {
-          console.log("mouse is moving", event, g, context);
-          Dygraph.movePan(event, g, context);
-        }
-      },
-      mouseup: (event, g, context) => {
-        console.log("mouseup", event, g, context);
-        Dygraph.endPan(event, g, context);
-        context.isPanning = false;
-      }
-});*/
+		// Define custom interaction model for Dygraph to handle panning end event
+		const interactionModel = Object.assign({}, Dygraph.defaultInteractionModel, {
+			mouseup: (event, g, context) => {
+				if (context.isPanning == true) {
+					onPanZoom(g.dateWindow_[0], g.dateWindow_[1]);
+				}
+				Dygraph.endPan(event, g, context);
+				context.isPanning = false;
+			}
+		});
 		
 		var g = new Dygraph(this.graphRef.current, data, {
 			legend: 'always',
@@ -99,11 +86,10 @@ class TimeSeriesGraphView extends React.Component {
 			animatedZooms: true,
 			connectSeparatedPoints: true,
 			ylabel: 'Temperature (&#8451;)',
-			
-			
+			interactionModel: interactionModel,
 			
 			zoomCallback: function(minX, maxX, yRanges) {
-				onZoom(minX, maxX);
+				onPanZoom(minX, maxX);
 			}
         });
 		

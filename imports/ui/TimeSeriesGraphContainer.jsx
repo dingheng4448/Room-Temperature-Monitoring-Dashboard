@@ -10,9 +10,8 @@ const TimeSeriesGraphContainer = withTracker(({ dataStartString, dataEndString }
 	var endDate = new Date(dataEndString);
 	
 	Meteor.subscribe('queriedResults', [startDate, endDate]);
-	console.log(TimeseriesCollection.find({}).fetch());
 	return {
-		timeseries: TimeseriesCollection.find({}).fetch()
+		timeseries: TimeseriesCollection.find({}, { sort: { timestamp: 1 } }).fetch()
 	};
 })(TimeSeriesGraphView);
 

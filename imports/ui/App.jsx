@@ -6,18 +6,18 @@ class App extends React.Component {
 	constructor(props){
 		super(props);	
 	
-		let defaultStartString = "2013-10-02T05:00:00";
-		let defaultEndString = "2013-10-03T00:00:00";
-		let defaultMinDate = "2013-10-02";
-		let defaultMaxDate = "2013-12-03";
+		this.defaultStartString = "2013-10-02T05:00:00";
+		this.defaultEndString = "2013-10-03T00:00:00";
+		this.defaultMinDate = "2013-10-02";
+		this.defaultMaxDate = "2013-12-03";
 		
 		this.state = {
-			minDate: defaultMinDate,
-			maxDate: defaultMaxDate,
-			inputStartString: defaultStartString,
-			inputEndString: defaultEndString,
-			dataStartString: defaultStartString,
-			dataEndString: defaultEndString
+			minDate: this.defaultMinDate,
+			maxDate: this.defaultMaxDate,
+			inputStartString: this.defaultStartString,
+			inputEndString: this.defaultEndString,
+			dataStartString: this.defaultStartString,
+			dataEndString: this.defaultEndString
 		}; 
 	}
 	
@@ -105,16 +105,39 @@ class App extends React.Component {
 		}
 	}
 	
-	// Update start and end input strings upon zoom
+	// Update start and end input strings upon pan/zoom
 	updateInputFields = (minX, maxX) => {
 		let timezoneOffset = (new Date()).getTimezoneOffset() * 60000;
 		let newInputStartString = (new Date(minX - timezoneOffset)).toISOString().slice(0, -8);
 		let newInputEndString = (new Date(maxX - timezoneOffset)).toISOString().slice(0, -8);
 		
-		this.setState({
-			inputStartString: newInputStartString,
-			inputEndString: newInputEndString
-		});
+		let defaultStartDate = new Date(this.defaultStartString);
+		let dataStartDate = new Date(this.state.dataStartString);
+		let dataEndDate = new Date(this.state.dataEndString);
+		let newStartDate = new Date(newInputStartString);
+		let newEndDate = new Date(newInputEndString);
+		
+		if (newStartDate < defaultStartDate) {
+			newInputStartString = this.defaultStartString;
+			newStartDate = new Date(newInputStartString);
+		}
+		
+		if (newStartDate < dataStartDate || newStartDate > dataEndDate) {
+			this.setState({
+				dataStartString: newInputStartString,
+				inputStartString: newInputStartString
+			});
+		} else if (newEndDate < dataStartDate || newEndDate > dataEndDate) {
+			this.setState({
+				dataEndString: newInputEndString,
+				inputEndString: newInputEndString
+			});
+		} else {
+			this.setState({
+				inputStartString: newInputStartString,
+				inputEndString: newInputEndString
+			});
+		}
 	}
 	
 	render() {
@@ -132,7 +155,7 @@ class App extends React.Component {
 					onChangeStartTime={this.updateStartTime} 
 					onChangeEndDate={this.updateEndDate} 
 					onChangeEndTime={this.updateEndTime} 
-					onZoom={this.updateInputFields}
+					onPanZoom={this.updateInputFields}
 					onReset={this.resetInputFields}
 				/>
 				<FloorplanView />
