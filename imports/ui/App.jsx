@@ -190,7 +190,7 @@ class App extends React.Component {
 	
 	render() {
 		return ( 
-			<div id="dashboard">
+			<div>
 				<h3 id="header">sendh3lp's Room Temperature Monitoring Dashboard</h3>
 				<TimeSeriesGraphContainer 
 					minDate={this.state.minDate}

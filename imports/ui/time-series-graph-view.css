@@ -5,7 +5,6 @@
 	width: 100%;
 	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 	border-radius: 5px;
-	margin-left: 20px;
 }
 	
 #graph-container {
@@ -57,17 +56,18 @@
 #sampleSizeSlider::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	appearance: none;
-	width: 20px;
-	height: 20px;
+	width: 15px;
+	height: 15px;
 	border-radius: 50%; 
-	background: rgb(137, 139, 137);
-	border: 1px solid #5F6B78;
+	background: rgb(190, 190, 190);
+	/* border: 1px solid #5F6B78; */
 	cursor: pointer;
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
 #sampleSizeSlider::-moz-range-thumb {
-	width: 25px;
-	height: 25px;
+	width: 15px;
+	height: 15px;
 	border-radius: 50%;
 	background: rgb(137, 139, 137);
 	cursor: pointer;
