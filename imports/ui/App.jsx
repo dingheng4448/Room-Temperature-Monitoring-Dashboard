@@ -180,6 +180,7 @@ class App extends React.Component {
 	}
 	
 	render() {
+		document.getElementById("javascript-check").style.display="none";
 		return ( 
 			<div>
 				<h3 id="header">sendh3lp's Room Temperature Monitoring Dashboard</h3>
