@@ -55,7 +55,6 @@ class App extends React.Component {
 		// find action being carried out by user
 		var action = 'CLICK_'
 		action = action.concat(roomNum.toUpperCase());
-		console.log("the action is " + action);
 
 		// send action to xstate machine
 		this.service.send( action );
