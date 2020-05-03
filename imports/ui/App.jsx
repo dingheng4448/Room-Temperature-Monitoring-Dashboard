@@ -13,15 +13,7 @@ class App extends React.Component {
 		this.defaultMinDate = "2013-10-02";
 		this.defaultMaxDate = "2013-12-03";
 		
-		// Random default temperature values for the rooms
 		var tempValues = new Map();
-		tempValues.set('r0', 80);
-		tempValues.set('r1', 93);
-		tempValues.set('r2', 8);
-		tempValues.set('r3', 16);	
-		tempValues.set('r4', 3);
-		tempValues.set('r5', 56);
-		tempValues.set('r6', 57);
 		this.roomsRef = React.createRef();
 		
 		this.state = {

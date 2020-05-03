@@ -15,8 +15,16 @@ class FloorplanView extends React.Component {
 	}
 
 	findRoomColours = (tempValues) => {
+		var tempColours;
+		// data being pulled or error in pulling data (transition / error state)
+		// check for NaN value
+		if (this.state.tempValues.get('r0') != this.state.tempValues.get('r0')) { 
+			tempColours = ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"];
+		} else {
+			tempColours = ["#01365F", "#01579B", "#0288D1", "#21A2DD", "#53AFE1", "#B3E5FC", "#D2F1FF"];
+		}
+
 		var sortedTemp = new Map([...tempValues.entries()].sort((a,b) => a[1] - b[1]));
-		var tempColours = ["#01365F", "#01579B", "#0288D1", "#4FC3F7", "#6BC8FA", "#B3E5FC", "#BEEBFF"];
 		
 		let index = 0;
 		for(let [key,value] of sortedTemp ) {
@@ -24,12 +32,10 @@ class FloorplanView extends React.Component {
 			index++;
 		}
 		return sortedTemp;
-		
 
 	}
 
-	render() { 	
-
+	render() {
 		var roomColours = this.findRoomColours(this.state.tempValues);
 		var tempDashboardState = this.props.tempDashboardState;
 
