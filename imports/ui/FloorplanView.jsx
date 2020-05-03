@@ -1,7 +1,7 @@
 import React from 'react';
 import './FloorplanView.css';
-import Corridor from './Corridor.jsx';
-import Room from './Room.jsx';
+import Corridor from './CorridorView.jsx';
+import Room from './RoomView.jsx';
 
 class FloorplanView extends React.Component {	
 	constructor(props) {
