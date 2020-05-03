@@ -136,7 +136,7 @@ class TimeSeriesGraphView extends React.Component {
 			ylabel: 'Temperature (&#8451;)',
 			interactionModel: interactionModel,
 			visibility: [true, true, true, true, true, true, true],
-			colors: ['#006400', '#000080', '#b03060', '#00bfff', '#ff0000', '#00ff00', '#ff00ff'],
+			colors: ['#006400', '#000080', '#b03060', '#00bfff', '#ff0000', '#ff00ff', '#00ff00'],
 			
 			zoomCallback: function(minX, maxX, yRanges) {
 				onPanZoom(minX, maxX);
