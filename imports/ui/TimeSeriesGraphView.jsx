@@ -89,10 +89,21 @@ class TimeSeriesGraphView extends React.Component {
 			// Set graph window to start/end inputs
 			var minX = Date.parse(this.props.inputStartString);
 			var maxX = Date.parse(this.props.inputEndString);
-		
+			
+			// Show/Hide graph lines depending on rooms selected
+			var r0Selected = this.props.tempDashboardState.value.room0 === "selected";
+			var r1Selected = this.props.tempDashboardState.value.room1 === "selected";
+			var r2Selected = this.props.tempDashboardState.value.room2 === "selected";
+			var r3Selected = this.props.tempDashboardState.value.room3 === "selected";
+			var r4Selected = this.props.tempDashboardState.value.room4 === "selected";
+			var r5Selected = this.props.tempDashboardState.value.room5 === "selected";
+			var r6Selected = this.props.tempDashboardState.value.room6 === "selected";
+			
 			this.graph.updateOptions({ 
 				file: data,
-				dateWindow: [minX, maxX]
+				dateWindow: [minX, maxX],
+				visibility: [r0Selected, r1Selected, r2Selected,
+							r3Selected, r4Selected, r5Selected, r6Selected]
 			});
 		}
 	}
@@ -124,6 +135,7 @@ class TimeSeriesGraphView extends React.Component {
 			connectSeparatedPoints: true,
 			ylabel: 'Temperature (&#8451;)',
 			interactionModel: interactionModel,
+			visibility: [true, true, true, true, true, true, true],
 			
 			zoomCallback: function(minX, maxX, yRanges) {
 				onPanZoom(minX, maxX);

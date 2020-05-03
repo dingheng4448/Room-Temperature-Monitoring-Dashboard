@@ -66,11 +66,6 @@ class App extends React.Component {
 		// because setState causes graph to reload which triggers updateTempValues again
 		this.roomsRef.current.forceUpdate();
 	}
-
-	// function to find average temperatures
-	findAveTemp = (temperatures, sampleSize) => {
-
-	}
 	
 	// Update inputStartString upon changes in start date input
 	updateStartDate = e => {
@@ -211,6 +206,7 @@ class App extends React.Component {
 					onPanZoom={this.updateInputFields}
 					tempValues={this.state.tempValues}
 					updateTempValues={this.updateTempValues}
+					tempDashboardState={this.state.tempDashboardState}
 				/>
 				<FloorplanView 
 					ref={this.roomsRef}
