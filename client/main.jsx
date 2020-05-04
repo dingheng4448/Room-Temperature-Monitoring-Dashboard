@@ -18,12 +18,12 @@ Meteor.startup(() => {
 Notification.requestPermission(result =>  {
 	console.log("Push notifications permissions " + result);
 	// Uncomment the following code to test notifications
-	/*if (result === 'granted' && 'Notification' in window) {
+	if (result === 'granted' && 'Notification' in window) {
 		navigator.serviceWorker.ready.then(registration => {
 			registration.showNotification('Temperature Dashboard', {
 				body: 'Welcome!',
 				tag: 'welcome'
 			});
 		});
-	}*/
+	}
 });
