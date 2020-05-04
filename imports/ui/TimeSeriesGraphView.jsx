@@ -29,57 +29,76 @@ class TimeSeriesGraphView extends React.Component {
 			// Set graph window to start/end inputs
 			var minX = Date.parse(this.props.inputStartString);
 			var maxX = Date.parse(this.props.inputEndString);
+			
+			// Extract data from timeseries for current graph window
+			var extractedData = [];
+			var minXDate = new Date(minX);
+			var maxXDate = new Date(maxX);
+			for (var i=0; i < this.props.timeseries.length; i += 1) {
+				let item = this.props.timeseries[i];
+				let itemDate = new Date(item.timestamp);
+				if (itemDate >= minXDate) {
+					extractedData.push(item);
+				}
+				if (itemDate >= maxXDate) {
+					break;
+				}
+			}
 
-			// Calculate max slider range based on total number of date points in timeseries
-			var maxDatePoints = this.props.timeseries.length;
+			// Calculate max slider range based on total number of date points in extracted data
+			var maxDatePoints = extractedData.length;
 			var maxSliderValue = Math.ceil(
 				Math.log(maxDatePoints) / Math.log(this.state.baseValue)
 			);
 			
-			// Update max slider range if timeseries data was changed
+			// Update max slider range if extracted data was changed
 			if (this.state.maxSliderValue != maxSliderValue) {
 				this.setState({
 					maxSliderValue: maxSliderValue
 				});
 			}
 			
-			// Calculate interval to skip when loading data into graph
+			// Calculate interval to skip when loading extracted data into graph
 			var samplesPerLine = Math.pow(this.state.baseValue, this.state.currentSliderValue);
 			var skipSize = Math.ceil(maxDatePoints/samplesPerLine);
 			
-			// Convert JSON timeseries data into CSV and calculate average temps
-			var data = "";
+			var displayData = "";
 			var newDatePoints = 0;
-			var r0 = 0;
+			var r0Total = 0;
 			var r0NullCount = 0;
-			var r1 = 0;
+			var r1Total = 0;
 			var r1NullCount = 0;
-			var r2 = 0;
+			var r2Total = 0;
 			var r2NullCount = 0;
-			var r3 = 0;
+			var r3Total = 0;
 			var r3NullCount = 0;
-			var r4 = 0; 
+			var r4Total = 0; 
 			var r4NullCount = 0;
-			var r5 = 0;
+			var r5Total = 0;
 			var r5NullCount = 0;
-			var r6 = 0;
+			var r6Total = 0;
 			var r6NullCount = 0;
-
+			
+			// Convert JSON extracted data into CSV to display on graph
 			for (var i=0; i < maxDatePoints; i += skipSize) {
-				var item = this.props.timeseries[i];
-				data += item.timestamp + ',' + (item.room_0_temp || "NaN") + ',' +
+				let item = extractedData[i];
+				
+				// CSV Conversion
+				displayData += item.timestamp + ',' + (item.room_0_temp || "NaN") + ',' +
 				(item.room_1_temp || "NaN") + ',' + (item.room_2_temp || "NaN") + ',' +
 				(item.room_3_temp || "NaN") + ',' + (item.room_4_temp || "NaN") + ',' +
 				(item.room_5_temp || "NaN") + ',' + (item.room_6_temp || "NaN") + "\n";
 				
-				r0 += parseFloat(item.room_0_temp || 0);
-				r1 += parseFloat(item.room_1_temp || 0);
-				r2 += parseFloat(item.room_2_temp || 0);
-				r3 += parseFloat(item.room_3_temp || 0);
-				r4 += parseFloat(item.room_4_temp || 0);
-				r5 += parseFloat(item.room_5_temp || 0);
-				r6 += parseFloat(item.room_6_temp || 0);
+				// Add each room's temperature to its total or add 0 if data is missing
+				r0Total += parseFloat(item.room_0_temp || 0);
+				r1Total += parseFloat(item.room_1_temp || 0);
+				r2Total += parseFloat(item.room_2_temp || 0);
+				r3Total += parseFloat(item.room_3_temp || 0);
+				r4Total += parseFloat(item.room_4_temp || 0);
+				r5Total += parseFloat(item.room_5_temp || 0);
+				r6Total += parseFloat(item.room_6_temp || 0);
 				
+				// Log each time each room's temperature data is missing
 				if (item.room_0_temp == null) r0NullCount++;
 				if (item.room_1_temp == null) r1NullCount++;
 				if (item.room_2_temp == null) r2NullCount++;
@@ -90,18 +109,20 @@ class TimeSeriesGraphView extends React.Component {
 				
 				newDatePoints++;
 			}
-			this.props.tempValues.set('r0', r0/(newDatePoints-r0NullCount));
-			this.props.tempValues.set('r1', r1/(newDatePoints-r1NullCount));
-			this.props.tempValues.set('r2', r2/(newDatePoints-r2NullCount));
-			this.props.tempValues.set('r3', r3/(newDatePoints-r3NullCount));	
-			this.props.tempValues.set('r4', r4/(newDatePoints-r4NullCount));
-			this.props.tempValues.set('r5', r5/(newDatePoints-r5NullCount));
-			this.props.tempValues.set('r6', r6/(newDatePoints-r6NullCount));
+			
+			// Calculate average temperatures of each room in current graph window
+			this.props.tempValues.set('r0', r0Total/(newDatePoints-r0NullCount));
+			this.props.tempValues.set('r1', r1Total/(newDatePoints-r1NullCount));
+			this.props.tempValues.set('r2', r2Total/(newDatePoints-r2NullCount));
+			this.props.tempValues.set('r3', r3Total/(newDatePoints-r3NullCount));	
+			this.props.tempValues.set('r4', r4Total/(newDatePoints-r4NullCount));
+			this.props.tempValues.set('r5', r5Total/(newDatePoints-r5NullCount));
+			this.props.tempValues.set('r6', r6Total/(newDatePoints-r6NullCount));
 			this.props.updateTempValues();
 			
 			// Uncomment to include end point in graph
 			/*var lastRow = this.props.timeseries[this.props.timeseries.length - 1];
-			data += lastRow.timestamp + ',' + (lastRow.room_0_temp || "NaN") + ',' +
+			displayData += lastRow.timestamp + ',' + (lastRow.room_0_temp || "NaN") + ',' +
 				(lastRow.room_1_temp || "NaN") + ',' + (lastRow.room_2_temp || "NaN") + ',' +
 				(lastRow.room_3_temp || "NaN") + ',' + (lastRow.room_4_temp || "NaN") + ',' +
 				(lastRow.room_5_temp || "NaN") + ',' + (lastRow.room_6_temp || "NaN") + "\n";*/
@@ -115,8 +136,9 @@ class TimeSeriesGraphView extends React.Component {
 			var r5Selected = this.props.tempDashboardState.value.room5 === "selected";
 			var r6Selected = this.props.tempDashboardState.value.room6 === "selected";
 			
+			// Update graph with new options
 			this.graph.updateOptions({ 
-				file: data,
+				file: displayData,
 				dateWindow: [minX, maxX],
 				visibility: [r0Selected, r1Selected, r2Selected,
 							r3Selected, r4Selected, r5Selected, r6Selected]
