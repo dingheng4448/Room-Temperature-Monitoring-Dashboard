@@ -14,3 +14,10 @@ Meteor.startup(() => {
 	}
 	render(<App/>, document.getElementById('react-target'));
 });
+
+Notification.requestPermission(result =>  {
+	console.log("Push notifications permissions " + result);
+	if (result === 'granted') {
+		alert('Push notifications enabled!');
+	}
+});
