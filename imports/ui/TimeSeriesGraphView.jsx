@@ -25,6 +25,10 @@ class TimeSeriesGraphView extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 		if (((this.props.timeseries !== prevProps.timeseries) && this.graph != null) ||
 			((this.state.currentSliderValue !== prevState.currentSliderValue) && this.graph != null)) {
+				
+			// Set graph window to start/end inputs
+			var minX = Date.parse(this.props.inputStartString);
+			var maxX = Date.parse(this.props.inputEndString);
 
 			// Calculate max slider range based on total number of date points in timeseries
 			var maxDatePoints = this.props.timeseries.length;
@@ -47,12 +51,20 @@ class TimeSeriesGraphView extends React.Component {
 			var data = "";
 			var newDatePoints = 0;
 			var r0 = 0;
+			var r0NullCount = 0;
 			var r1 = 0;
+			var r1NullCount = 0;
 			var r2 = 0;
+			var r2NullCount = 0;
 			var r3 = 0;
+			var r3NullCount = 0;
 			var r4 = 0; 
+			var r4NullCount = 0;
 			var r5 = 0;
+			var r5NullCount = 0;
 			var r6 = 0;
+			var r6NullCount = 0;
+
 			for (var i=0; i < maxDatePoints; i += skipSize) {
 				var item = this.props.timeseries[i];
 				data += item.timestamp + ',' + (item.room_0_temp || "NaN") + ',' +
@@ -68,15 +80,23 @@ class TimeSeriesGraphView extends React.Component {
 				r5 += parseFloat(item.room_5_temp || 0);
 				r6 += parseFloat(item.room_6_temp || 0);
 				
+				if (item.room_0_temp == null) r0NullCount++;
+				if (item.room_1_temp == null) r1NullCount++;
+				if (item.room_2_temp == null) r2NullCount++;
+				if (item.room_3_temp == null) r3NullCount++;
+				if (item.room_4_temp == null) r4NullCount++;
+				if (item.room_5_temp == null) r5NullCount++;
+				if (item.room_6_temp == null) r6NullCount++;
+				
 				newDatePoints++;
 			}
-			this.props.tempValues.set('r0', r0/newDatePoints);
-			this.props.tempValues.set('r1', r1/newDatePoints);
-			this.props.tempValues.set('r2', r2/newDatePoints);
-			this.props.tempValues.set('r3', r3/newDatePoints);	
-			this.props.tempValues.set('r4', r4/newDatePoints);
-			this.props.tempValues.set('r5', r5/newDatePoints);
-			this.props.tempValues.set('r6', r6/newDatePoints);
+			this.props.tempValues.set('r0', r0/(newDatePoints-r0NullCount));
+			this.props.tempValues.set('r1', r1/(newDatePoints-r1NullCount));
+			this.props.tempValues.set('r2', r2/(newDatePoints-r2NullCount));
+			this.props.tempValues.set('r3', r3/(newDatePoints-r3NullCount));	
+			this.props.tempValues.set('r4', r4/(newDatePoints-r4NullCount));
+			this.props.tempValues.set('r5', r5/(newDatePoints-r5NullCount));
+			this.props.tempValues.set('r6', r6/(newDatePoints-r6NullCount));
 			this.props.updateTempValues();
 			
 			// Uncomment to include end point in graph
@@ -86,11 +106,7 @@ class TimeSeriesGraphView extends React.Component {
 				(lastRow.room_3_temp || "NaN") + ',' + (lastRow.room_4_temp || "NaN") + ',' +
 				(lastRow.room_5_temp || "NaN") + ',' + (lastRow.room_6_temp || "NaN") + "\n";*/
 			
-			// Set graph window to start/end inputs
-			var minX = Date.parse(this.props.inputStartString);
-			var maxX = Date.parse(this.props.inputEndString);
-			
-			// Show/Hide graph lines depending on rooms selected
+			// Show/Hide graph lines depending on rooms selected from data in XState
 			var r0Selected = this.props.tempDashboardState.value.room0 === "selected";
 			var r1Selected = this.props.tempDashboardState.value.room1 === "selected";
 			var r2Selected = this.props.tempDashboardState.value.room2 === "selected";
