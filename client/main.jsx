@@ -17,7 +17,13 @@ Meteor.startup(() => {
 
 Notification.requestPermission(result =>  {
 	console.log("Push notifications permissions " + result);
-	if (result === 'granted') {
-		alert('Push notifications enabled!');
-	}
+	// Uncomment the following code to test notifications
+	/*if (result === 'granted' && 'Notification' in window) {
+		navigator.serviceWorker.ready.then(registration => {
+			registration.showNotification('Temperature Dashboard', {
+				body: 'Welcome!',
+				tag: 'welcome'
+			});
+		});
+	}*/
 });
